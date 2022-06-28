@@ -10,23 +10,80 @@ main_window = tkinter.Tk()
 main_window.title("Deteksi Jarak")
 main_window.geometry("500x250")
 
+var = IntVar(main_window, 1)
+cam = StringVar()
+
 
 def btn_openFile():
     main_window.withdraw()
 
     curdir = os.getcwd()
-    tempdir = filedialog.askopenfilename(parent=main_window, initialdir=curdir, title='Plilih lokasi vidio')
+    tempdir = filedialog.askopenfilename(parent=main_window, initialdir=curdir, title='Plilih lokasi vidio', filetypes=[
+        ("all video format", ".mp4"),
+        ("all video format", ".flv"),
+        ("all video format", ".avi"),
+    ])
 
     ent1.insert(0, str(tempdir))
 
     main_window.deiconify()
-    return tempdir
+
+
+def btn_mulai():
+    if var.get() == 1:
+        path = ent1.get()
+        cap = cv2.VideoCapture(path)
+
+        if (cap.isOpened()== False):
+            print("Error opening video  file")
+
+        while(cap.isOpened()):
+
+            # Capture frame-by-frame
+            ret, frame = cap.read()
+            if ret == True:
+
+                # Display the resulting frame
+                cv2.imshow('Frame', frame)
+
+                # Press Q on keyboard to  exit
+                if cv2.waitKey(25) & 0xFF == ord('q'):
+                    break
+
+            # Break the loop
+            else:
+                break
+
+    elif var.get() == 2:
+        path = ent2.get()
+        cap = cv2.VideoCapture(int(path))
+
+        if (cap.isOpened()== False):
+            print("Error opening video  file")
+
+        while(cap.isOpened()):
+
+            # Capture frame-by-frame
+            ret, frame = cap.read()
+            if ret == True:
+
+                # Display the resulting frame
+                cv2.imshow('Frame', frame)
+
+                # Press Q on keyboard to  exit
+                if cv2.waitKey(25) & 0xFF == ord('q'):
+                    break
+
+            # Break the loop
+            else:
+                break
 
 
 def hide1():
     ent1.config(state='disabled')
     ent2.config(state='normal')
     lbl2.config(state='active')
+    lbl3.config(state='active')
     btn_open.config(state='disabled')
 
 
@@ -34,11 +91,9 @@ def hide2():
     ent1.config(state='normal')
     ent2.config(state='disabled')
     lbl2.config(state='disabled')
+    lbl3.config(state='disabled')
     btn_open.config(state='active')
 
-
-var = IntVar(main_window, 1)
-cam = StringVar()
 
 label1 = tkinter.Label(main_window, text="masukan video untuk deteksi")
 label1.grid(row=0, column=1)
@@ -61,6 +116,14 @@ lbl3.grid(row=4, column=1, sticky='W')
 lbl2 = tkinter.Label(main_window, text="Camera : ", textvariable=cam)
 lbl2.grid(row=4, column=1, sticky='N')
 
+# btn mulai
+lbl_empty = tkinter.Label(main_window, text=" ")
+lbl_empty.grid(row=6, column=1, sticky='N')
+btn_mulai = tkinter.Button(main_window, text="Mulai Video", command=btn_mulai)
+btn_mulai.grid(row=7, column=1, sticky='N')
+
+final_lbl = tkinter.Label(main_window, text="final")
+final_lbl.grid(row=8, column=1, sticky='N')
 
 hide2()
 
