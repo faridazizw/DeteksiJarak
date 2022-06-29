@@ -122,9 +122,6 @@ lbl_empty.grid(row=6, column=1, sticky='N')
 btn_mulai = tkinter.Button(main_window, text="Mulai Video", command=btn_mulai)
 btn_mulai.grid(row=7, column=1, sticky='N')
 
-final_lbl = tkinter.Label(main_window, text="final")
-final_lbl.grid(row=8, column=1, sticky='N')
-
 hide2()
 
 main_window.mainloop()
