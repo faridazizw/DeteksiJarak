@@ -1,3 +1,4 @@
+import yoloObjectDetection
 import tkinter
 import numpy as np
 import cv2
@@ -6,7 +7,7 @@ from tkinter import filedialog
 from tkinter import *
 
 
-class PytCam:
+class Video:
 
     def __init__(self):
         self.curdir = ""
@@ -26,6 +27,7 @@ class PytCam:
         ent1.insert(0, str(self.tempdir))
 
         main_window.deiconify()
+        return self.tempdir
 
     def btn_mulai(self):
         if var.get() == 1:
@@ -76,9 +78,6 @@ class PytCam:
                 else:
                     break
 
-    def getCurdir(self):
-        return self.curdir
-
     def hide1(self):
         ent1.config(state='disabled')
         ent2.config(state='normal')
@@ -103,7 +102,7 @@ if __name__ == '__main__':
     var = IntVar(main_window, 1)
     cam = StringVar()
 
-    pc = PytCam()
+    pc = Video()
 
     label1 = tkinter.Label(main_window, text="masukan video untuk deteksi")
     label1.grid(row=0, column=1)
@@ -127,7 +126,7 @@ if __name__ == '__main__':
     lbl2.grid(row=4, column=1, sticky='N')
 
     # btn mulai
-    lbl_empty = tkinter.Label(main_window, text="pc.getCurdir())")
+    lbl_empty = tkinter.Label(main_window, text="")
     lbl_empty.grid(row=6, column=1, sticky='N')
     btn_mulai = tkinter.Button(main_window, text="Mulai Video", command=pc.btn_mulai)
     btn_mulai.grid(row=7, column=1, sticky='N')
