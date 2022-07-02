@@ -4,7 +4,7 @@ import numpy as np
 lower = np.array([5, 120, 255])
 upper = np.array([35, 255, 255])
 
-video = cv2.VideoCapture("video/pedestrian3.mov")
+video = cv2.VideoCapture("video/pedestrian3.mp4")
 
 while True:
     success, img = video.read()
