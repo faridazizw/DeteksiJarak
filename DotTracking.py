@@ -10,8 +10,10 @@ video = cv2.VideoCapture("video/pedestrian3.mp4")
 font = cv2.FONT_HERSHEY_SIMPLEX
 color = (255, 0, 0)
 
-def hitungJarak(x1,x2,y1,y2):
-    return sqrt((x2-x1)**2 + (y2-y1)**2)
+
+def hitungJarak(x1, x2, y1, y2):
+    return sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+
 
 while True:
     success, img = video.read()
@@ -48,14 +50,17 @@ while True:
 
         jarak = 0
 
-        if x1 > x2:
-            jarak = hitungJarak(x1,x2,y1,y2)
-            cv2.putText(img, str(jarak), (int(jarak/2), int(jarak)), font, 1, color, 2)
-        elif x2 > x1:
-            jarak = hitungJarak(x2,x1,y2,y1)
-            cv2.putText(img, str(jarak), (int(jarak/2), int(jarak/2)), font, 1, color, 2)
-
         cv2.line(img, (x1, y1), (x2, y2), (255, 0, 0), 3)
+
+        if x1 > x2:
+            jarak = hitungJarak(x1, x2, y1, y2)
+            cv2.putText(img, str(jarak), (int(jarak / 2), int(jarak)), font, 1, color, 2)
+        elif x2 > x1:
+            jarak = hitungJarak(x2, x1, y2, y1)
+            cv2.putText(img, str(jarak), (int(jarak / 2), int(jarak / 2)), font, 1, color, 2)
+
+        if int(jarak) < 500:
+            cv2.line(img, (x1, y1), (x2, y2), (0, 0, 255), 3)
 
         if len(poin) >= 3:
             x3 = poin[2][0]
@@ -63,6 +68,18 @@ while True:
 
             cv2.line(img, (x1, y1), (x3, y3), (255, 0, 0), 3)
             cv2.line(img, (x2, y2), (x3, y3), (255, 0, 0), 3)
+
+            if x1 > x3:
+                jarak = hitungJarak(x1, x3, y1, y3)
+                print("jarak 2 : " + str(jarak))
+            elif x3 > x1:
+                jarak = hitungJarak(x3, x1, y3, y1)
+                print("jarak 2 : " + str(jarak))
+            elif x2 > x3:
+                jarak = hitungJarak(x2, x3, y2, y3)
+                print("jarak 2 : " + str(jarak))
+            elif x3 > x2:
+                jarak = hitungJarak(x3, x2, y3, y2)
 
             if len(poin) >= 4:
                 x4 = poin[3][0]
@@ -72,7 +89,7 @@ while True:
                 cv2.line(img, (x2, y2), (x4, y4), (255, 0, 0), 3)
                 cv2.line(img, (x3, y3), (x4, y4), (255, 0, 0), 3)
 
-        print(jarak)
+        print(int(jarak))
 
     cv2.imshow("mask", mask)
     cv2.imshow("video", img)
