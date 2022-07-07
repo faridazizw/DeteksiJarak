@@ -1,47 +1,136 @@
-import cv2
+
+import tkinter
 import numpy as np
+import cv2
+import os
+from tkinter import filedialog
+from tkinter import *
 
-# Create a VideoCapture object
-cap = cv2.VideoCapture(1)
-cap2 = cv2.VideoCapture('outpy.avi')
 
-# Check if camera opened successfully
-if (cap.isOpened() == False):
-    print("Unable to read camera feed")
+class Video:
 
-# Default resolutions of the frame are obtained.The default resolutions are system dependent.
-# We convert the resolutions from float to integer.
-frame_width = int(cap.get(3))
-frame_height = int(cap.get(4))
+    def __init__(self):
+        self.curdir = ""
+        self.tempdir = ""
 
-# Define the codec and create VideoWriter object.The output is stored in 'outpy.avi' file.
-out = cv2.VideoWriter('outpy.avi',cv2.VideoWriter_fourcc('M','J','P','G'), 10, (frame_width,frame_height))
+    def btn_openFile(self):
+        main_window.withdraw()
 
-while(True):
-    _, frame = cap.read()
-    _, frame2 = cap2.read()
+        self.curdir = os.getcwd()
+        self.tempdir = filedialog.askopenfilename(parent=main_window, initialdir=self.curdir,
+                                                  title='Plilih lokasi vidio', filetypes=[
+                ("all video format", ".mp4"),
+                ("all video format", ".flv"),
+                ("all video format", ".avi"),
+            ])
 
-    if _ == True:
+        ent1.insert(0, str(self.tempdir))
 
-        # Write the frame into the file 'output.avi'
-        out.write(frame)
+        main_window.deiconify()
+        return self.tempdir
 
-        # Display the resulting frame
-        cv2.imshow('frame',frame)
-        cv2.imshow('output', frame2)
+    def btn_mulai(self):
+        if var.get() == 1:
+            path = ent1.get()
+            cap = cv2.VideoCapture(path)
 
-        # Press Q on keyboard to stop recording
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+            if (cap.isOpened() == False):
+                print("Error opening video  file")
 
-    # Break the loop
-    else:
-        break
+            while (cap.isOpened()):
 
-    # When everything done, release the video capture and video write objects
-cap.release()
-cap2.release()
-out.release()
+                # Capture frame-by-frame
+                ret, frame = cap.read()
+                if ret == True:
 
-# Closes all the frames
-cv2.destroyAllWindows()
+                    # Display the resulting frame
+                    cv2.imshow('Frame', frame)
+
+                    # Press Q on keyboard to  exit
+                    if cv2.waitKey(25) & 0xFF == ord('q'):
+                        break
+
+                # Break the loop
+                else:
+                    break
+
+        elif var.get() == 2:
+            path = ent2.get()
+            cap = cv2.VideoCapture(int(path))
+
+            if (cap.isOpened() == False):
+                print("Error opening video  file")
+
+            while (cap.isOpened()):
+
+                # Capture frame-by-frame
+                ret, frame = cap.read()
+                if ret == True:
+
+                    # Display the resulting frame
+                    cv2.imshow('Frame', frame)
+
+                    # Press Q on keyboard to  exit
+                    if cv2.waitKey(25) & 0xFF == ord('q'):
+                        break
+
+                # Break the loop
+                else:
+                    break
+
+    def hide1(self):
+        ent1.config(state='disabled')
+        ent2.config(state='normal')
+        lbl2.config(state='active')
+        lbl3.config(state='active')
+        btn_open.config(state='disabled')
+
+    def hide2(self):
+        ent1.config(state='normal')
+        ent2.config(state='disabled')
+        lbl2.config(state='disabled')
+        lbl3.config(state='disabled')
+        btn_open.config(state='active')
+
+
+if __name__ == '__main__':
+    main_window = tkinter.Tk()
+
+    main_window.title("Deteksi Jarak")
+    main_window.geometry("500x250")
+
+    var = IntVar(main_window, 1)
+    cam = StringVar()
+
+    pc = Video()
+
+    label1 = tkinter.Label(main_window, text="masukan video untuk deteksi")
+    label1.grid(row=0, column=1)
+
+    # radio btn 1
+    rb1 = Radiobutton(main_window, text="Pilih Lokasi Video", variable=var, value=1, command=pc.hide2)
+    rb1.grid(row=1, column=0, sticky='W')
+    ent1 = tkinter.Entry(main_window)
+    ent1.grid(row=2, column=0, sticky='N')
+    btn_open = tkinter.Button(main_window, text="Open File", command=pc.btn_openFile)
+    btn_open.grid(row=2, column=1, sticky='W')
+
+    # radio btn 2
+    rb2 = Radiobutton(main_window, text="Nyalakan Realtime Kamera", variable=var, value=2, command=pc.hide1)
+    rb2.grid(row=3, column=0, sticky='W')
+    ent2 = tkinter.Entry(main_window, textvariable=cam)
+    ent2.grid(row=4, column=0, sticky='N')
+    lbl3 = tkinter.Label(main_window, text="Kamera : ")
+    lbl3.grid(row=4, column=1, sticky='W')
+    lbl2 = tkinter.Label(main_window, text="Camera : ", textvariable=cam)
+    lbl2.grid(row=4, column=1, sticky='N')
+
+    # btn mulai
+    lbl_empty = tkinter.Label(main_window, text="")
+    lbl_empty.grid(row=6, column=1, sticky='N')
+    btn_mulai = tkinter.Button(main_window, text="Mulai Video", command=pc.btn_mulai)
+    btn_mulai.grid(row=7, column=1, sticky='N')
+
+    pc.hide2()
+
+    main_window.mainloop()

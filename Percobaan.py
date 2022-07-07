@@ -18,6 +18,7 @@ jarak23 = 0
 jarak24 = 0
 jarak34 = 0
 
+
 def hitungJarak(x1, x2, y1, y2):
     return sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
@@ -49,8 +50,6 @@ font = cv2.FONT_HERSHEY_SIMPLEX
 
 timeframe = time.time()
 frame_id = 0
-
-video = cv2.VideoCapture(cap)
 
 while True:
     _, frame = cap.read()
@@ -118,17 +117,8 @@ while True:
 
     result = cv2.warpPerspective(frame, matrix, (350, 500))
 
-    img1 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    frame = ImageTk.PhotoImage(Image.fromarray(img1))
-
-    img2 = cv2.cvtColor(result, cv2.COLOR_BGR2RGB)
-    result = ImageTk.PhotoImage(Image.fromarray(img2))
-
-    #perhitungan jarak
-
-
-    success, img = video.read()
-    image = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    # perhitungan jarak
+    image = cv2.cvtColor(result, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(image, lower, upper)
 
     contours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -136,21 +126,18 @@ while True:
     kernelOp = np.ones((3, 3), np.uint8)
 
     poin = []
+    jarakMin = 200
 
     if len(contours) != 0:
         for contours in contours:
 
-            if cv2.contourArea(contours) > 50:
+            if cv2.contourArea(contours) > 10:
                 x, y, w, h = cv2.boundingRect(contours)
                 # cv2.rectangle(img, (x, y), (x+w, y+h), (0, 0, 255), 3)
-                cv2.circle(img, (x + int(w / 2), y + int(h / 2)), 5, (255, 255, 255), -1)
-                cv2.circle(img, (x + int(w / 2), y + int(h / 2)), 200, (0, 255, 255), 1)
-
-                # cv2.putText(img, str(x) + "," + str(y), (x, y + 30), font, 1, color, 2)
+                cv2.circle(result, (x + int(w / 2), y + int(h / 2)), 5, (255, 255, 255), -1)
+                cv2.circle(result, (x + int(w / 2), y + int(h / 2)), int(jarakMin/2), (0, 255, 255), 1)
 
                 poin.append([x + int(w / 2), y + int(h / 2)])
-
-                # cv2.line(img,(x1,y1),(x2,y2),(255,0,0),3)
 
     if len(poin) >= 2:
         x1 = poin[0][0]
@@ -167,10 +154,10 @@ while True:
             jarak12 = hitungJarak(x2, x1, y2, y1)
             # cv2.putText(img, str(int(jarak12)), (int(jarak12 / 2), int(jarak12 / 2)), font, 1, color, 2)
 
-        if int(jarak12) < 400:
-            cv2.line(img, (x1, y1), (x2, y2), (0, 0, 255), 3)
+        if int(jarak12) < jarakMin:
+            cv2.line(result, (x1, y1), (x2, y2), (0, 0, 255), 3)
         else:
-            cv2.line(img, (x1, y1), (x2, y2), (255, 0, 0), 3)
+            cv2.line(result, (x1, y1), (x2, y2), (255, 0, 0), 3)
 
         # jarak x1 - x3 && x2 - x3
         if len(poin) >= 3:
@@ -186,14 +173,14 @@ while True:
             elif x3 > x2:
                 jarak23 = hitungJarak(x3, x2, y3, y2)
 
-            if int(jarak13) < 400:
-                cv2.line(img, (x1, y1), (x3, y3), (0, 0, 255), 3)
+            if int(jarak13) < jarakMin:
+                cv2.line(result, (x1, y1), (x3, y3), (0, 0, 255), 3)
             else:
-                cv2.line(img, (x1, y1), (x3, y3), (255, 0, 0), 3)
-            if int(jarak23) < 400:
-                cv2.line(img, (x2, y2), (x3, y3), (0, 0, 255), 3)
+                cv2.line(result, (x1, y1), (x3, y3), (255, 0, 0), 3)
+            if int(jarak23) < jarakMin:
+                cv2.line(result, (x2, y2), (x3, y3), (0, 0, 255), 3)
             else:
-                cv2.line(img, (x2, y2), (x3, y3), (255, 0, 0), 3)
+                cv2.line(result, (x2, y2), (x3, y3), (255, 0, 0), 3)
 
             # jarak x1 - x4 && x2 - x4 && x3 - x4
             if len(poin) >= 4:
@@ -213,18 +200,18 @@ while True:
                 elif x4 > x3:
                     jarak34 = hitungJarak(x4, x3, y4, y3)
 
-                if int(jarak14) < 400:
-                    cv2.line(img, (x1, y1), (x4, y4), (0, 0, 255), 3)
+                if int(jarak14) < jarakMin:
+                    cv2.line(result, (x1, y1), (x4, y4), (0, 0, 255), 3)
                 else:
-                    cv2.line(img, (x1, y1), (x4, y4), (255, 0, 0), 3)
-                if int(jarak24) < 400:
-                    cv2.line(img, (x2, y2), (x4, y4), (0, 0, 255), 3)
+                    cv2.line(result, (x1, y1), (x4, y4), (255, 0, 0), 3)
+                if int(jarak24) < jarakMin:
+                    cv2.line(result, (x2, y2), (x4, y4), (0, 0, 255), 3)
                 else:
-                    cv2.line(img, (x2, y2), (x4, y4), (255, 0, 0), 3)
-                if int(jarak34) < 400:
-                    cv2.line(img, (x3, y3), (x4, y4), (0, 0, 255), 3)
+                    cv2.line(result, (x2, y2), (x4, y4), (255, 0, 0), 3)
+                if int(jarak34) < jarakMin:
+                    cv2.line(result, (x3, y3), (x4, y4), (0, 0, 255), 3)
                 else:
-                    cv2.line(img, (x3, y3), (x4, y4), (255, 0, 0), 3)
+                    cv2.line(result, (x3, y3), (x4, y4), (255, 0, 0), 3)
 
             else:
                 jarak14 = 0
@@ -237,28 +224,23 @@ while True:
     else:
         jarak12 = 0
 
-    cv2.putText(img, "jarak 1 & 2 : " + str(int(jarak12)), (30, 50), font, 1, color, 2)
-    cv2.putText(img, "jarak 1 & 3 : " + str(int(jarak13)), (30, 80), font, 1, color, 2)
-    cv2.putText(img, "jarak 1 & 4 : " + str(int(jarak14)), (30, 110), font, 1, color, 2)
-    cv2.putText(img, "jarak 2 & 3 : " + str(int(jarak23)), (30, 140), font, 1, color, 2)
-    cv2.putText(img, "jarak 2 & 4 : " + str(int(jarak24)), (30, 170), font, 1, color, 2)
-    cv2.putText(img, "jarak 3 & 4 : " + str(int(jarak34)), (30, 200), font, 1, color, 2)
+    cv2.putText(result, "jarak 1 & 2 : " + str(int(jarak12)), (30, 50), font, 1, color, 2)
+    cv2.putText(result, "jarak 1 & 3 : " + str(int(jarak13)), (30, 80), font, 1, color, 2)
+    cv2.putText(result, "jarak 1 & 4 : " + str(int(jarak14)), (30, 110), font, 1, color, 2)
+    cv2.putText(result, "jarak 2 & 3 : " + str(int(jarak23)), (30, 140), font, 1, color, 2)
+    cv2.putText(result, "jarak 2 & 4 : " + str(int(jarak24)), (30, 170), font, 1, color, 2)
+    cv2.putText(result, "jarak 3 & 4 : " + str(int(jarak34)), (30, 200), font, 1, color, 2)
 
-    cv2.imshow("mask", mask)
-    cv2.imshow("video", img)
+    img1 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    frame = ImageTk.PhotoImage(Image.fromarray(img1))
 
-    cv2.waitKey(27)
-
-    # img1 = cv2.imshow("Image", frame)
-    # img2 = cv2.imshow("perspective transformation", result)
+    img2 = cv2.cvtColor(result, cv2.COLOR_BGR2RGB)
+    persp = ImageTk.PhotoImage(Image.fromarray(img2))
 
     L1['image'] = frame
-    L2['image'] = result
+    L2['image'] = persp
 
     root.update()
-
-    # cv2.imshow("Image", frame)
-    # cv2.imshow("perspective transformation", result)
 
     key = cv2.waitKey(1)
     if key == 27:  # Escape
