@@ -129,5 +129,5 @@ class DeteksiObjek:
     cv2.destroyAllWindows()
 
 
-if __name__ == '__main__':
-    DeteksiObjek()
+# if __name__ == '__main__':
+#     DeteksiObjek()
