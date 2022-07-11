@@ -16,6 +16,7 @@ class Video:
         self.curdir = ""
         self.tempdir = ""
         self.cap = ""
+        self.prevWindow = ""
 
     def btn_openFile(self):
         main_window.withdraw()
@@ -87,13 +88,13 @@ class Video:
         pass
 
     def openPrevWindow(self, cap):
-        newWindow = Toplevel(master)
+        self.prevWindow = Toplevel(master)
 
-        newWindow.title("New Window")
-        newWindow.grid_rowconfigure(0, weight=1)
-        newWindow.grid_columnconfigure(0, weight=1)
+        self.prevWindow.title("Tinjau Video")
+        self.prevWindow.grid_rowconfigure(0, weight=1)
+        self.prevWindow.grid_columnconfigure(0, weight=1)
 
-        frame1 = Frame(newWindow)
+        frame1 = Frame(self.prevWindow)
         frame1.grid(row=0, column=0)
 
         lbltext1 = Label(frame1, text="Tentukan wilayah deteksi", font="Times 22 bold")
@@ -102,16 +103,16 @@ class Video:
         lblvideo = Label(frame1)
         lblvideo.grid(row=2)
 
-        btnBack = Button(frame1, text="Kembali", command=lambda:[main_window.deiconify(), newWindow.destroy()], width=20, font="bold")
+        btnBack = Button(frame1, text="Kembali", command=lambda:[main_window.deiconify(), self.prevWindow.destroy()], width=20, font="bold")
         btnBack.grid(row=3, column=0, sticky=W, pady=15)
 
         btnClear = Button(frame1, text="Hapus", command=pc.clearValue, width=20, font="bold")
         btnClear.grid(row=3, column=0, pady=15)
 
-        btnProses = Button(frame1, text="Proses", command=pc.clearValue, width=20, font="bold")
+        btnProses = Button(frame1, text="Proses", command=pc.openProcessWindow, width=20, font="bold")
         btnProses.grid(row=3, column=0, sticky=E, pady=15)
 
-        newWindow.protocol("WM_DELETE_WINDOW", pc.disable_event)
+        self.prevWindow.protocol("WM_DELETE_WINDOW", pc.disable_event)
 
         while True:
             _, frame = cap.read()
@@ -144,7 +145,21 @@ class Video:
             lblvideo.bind('<Button-1>', pc.displayCoordinates)
 
             cv2.waitKey(25)
-            newWindow.update()
+            self.prevWindow.update()
+
+    def openProcessWindow(self):
+        self.prevWindow.destroy()
+        procWindow = Toplevel(master)
+
+        procWindow.title("Deteksi jarak antara manusia")
+        procWindow.grid_rowconfigure(0, weight=1)
+        procWindow.grid_columnconfigure(0, weight=1)
+
+        frame1 = Frame(procWindow)
+        frame1.grid(row=0, column=0)
+
+
+
 
 if __name__ == '__main__':
     main_window = tkinter.Tk()
