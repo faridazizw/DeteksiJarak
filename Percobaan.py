@@ -31,11 +31,7 @@ L1.grid(row=0, column=0, sticky='W')
 L2 = tkinter.Label(root, bg="red")
 L2.grid(row=0, column=1, sticky='N')
 
-# L3 = tkinter.Label(root, text="ssadsfasdfas")
-# L3.grid(row=1, column=0, sticky='S')
-
 # Load Yolo
-# net = cv2.dnn.readNet("weight/yolov3-tiny.weights", "cfg/yolov3-tiny.cfg")
 net = cv2.dnn.readNet("model/8yolov3_training_best58,45.weights", "cfg/yolov3_training.cfg")
 classes = []
 with open("classes.txt", "r") as f:
@@ -181,46 +177,47 @@ while True:
                 cv2.line(result, (x2, y2), (x3, y3), (0, 0, 255), 3)
             else:
                 cv2.line(result, (x2, y2), (x3, y3), (255, 0, 0), 3)
-
-            # jarak x1 - x4 && x2 - x4 && x3 - x4
-            if len(poin) >= 4:
-                x4 = poin[3][0]
-                y4 = poin[3][1]
-
-                if x1 > x4:
-                    jarak14 = hitungJarak(x1, x4, y1, y4)
-                elif x4 > x1:
-                    jarak14 = hitungJarak(x4, x1, y4, y1)
-                if x2 > x4:
-                    jarak24 = hitungJarak(x2, x4, y2, y4)
-                elif x4 > x2:
-                    jarak24 = hitungJarak(x4, x2, y4, y2)
-                if x3 > x4:
-                    jarak34 = hitungJarak(x3, x4, y3, y4)
-                elif x4 > x3:
-                    jarak34 = hitungJarak(x4, x3, y4, y3)
-
-                if int(jarak14) < jarakMin:
-                    cv2.line(result, (x1, y1), (x4, y4), (0, 0, 255), 3)
-                else:
-                    cv2.line(result, (x1, y1), (x4, y4), (255, 0, 0), 3)
-                if int(jarak24) < jarakMin:
-                    cv2.line(result, (x2, y2), (x4, y4), (0, 0, 255), 3)
-                else:
-                    cv2.line(result, (x2, y2), (x4, y4), (255, 0, 0), 3)
-                if int(jarak34) < jarakMin:
-                    cv2.line(result, (x3, y3), (x4, y4), (0, 0, 255), 3)
-                else:
-                    cv2.line(result, (x3, y3), (x4, y4), (255, 0, 0), 3)
-
-            else:
-                jarak14 = 0
-                jarak24 = 0
-                jarak34 = 0
-
         else:
             jarak13 = 0
             jarak23 = 0
+
+
+        # jarak x1 - x4 && x2 - x4 && x3 - x4
+        if len(poin) >= 4:
+            x4 = poin[3][0]
+            y4 = poin[3][1]
+
+            if x1 > x4:
+                jarak14 = hitungJarak(x1, x4, y1, y4)
+            elif x4 > x1:
+                jarak14 = hitungJarak(x4, x1, y4, y1)
+            if x2 > x4:
+                jarak24 = hitungJarak(x2, x4, y2, y4)
+            elif x4 > x2:
+                jarak24 = hitungJarak(x4, x2, y4, y2)
+            if x3 > x4:
+                jarak34 = hitungJarak(x3, x4, y3, y4)
+            elif x4 > x3:
+                jarak34 = hitungJarak(x4, x3, y4, y3)
+
+            if int(jarak14) < jarakMin:
+                cv2.line(result, (x1, y1), (x4, y4), (0, 0, 255), 3)
+            else:
+                cv2.line(result, (x1, y1), (x4, y4), (255, 0, 0), 3)
+            if int(jarak24) < jarakMin:
+                cv2.line(result, (x2, y2), (x4, y4), (0, 0, 255), 3)
+            else:
+                cv2.line(result, (x2, y2), (x4, y4), (255, 0, 0), 3)
+            if int(jarak34) < jarakMin:
+                cv2.line(result, (x3, y3), (x4, y4), (0, 0, 255), 3)
+            else:
+                cv2.line(result, (x3, y3), (x4, y4), (255, 0, 0), 3)
+
+        else:
+            jarak14 = 0
+            jarak24 = 0
+            jarak34 = 0
+
     else:
         jarak12 = 0
 
