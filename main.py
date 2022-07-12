@@ -354,6 +354,8 @@ class Video:
 
                 if int(jarak12) < jarakMin:
                     cv2.line(result, (x1, y1), (x2, y2), (0, 0, 255), 3)
+                    cv2.circle(result, (x1, y1), int(jarakMin / 2), (0, 0, 255), 1)
+                    cv2.circle(result, (x2, y2), int(jarakMin / 2), (0, 0, 255), 1)
                 else:
                     cv2.line(result, (x1, y1), (x2, y2), (255, 0, 0), 3)
 
@@ -373,10 +375,14 @@ class Video:
 
                     if int(jarak13) < jarakMin:
                         cv2.line(result, (x1, y1), (x3, y3), (0, 0, 255), 3)
+                        cv2.circle(result, (x1, y1), int(jarakMin / 2), (0, 0, 255), 1)
+                        cv2.circle(result, (x3, y3), int(jarakMin / 2), (0, 0, 255), 1)
                     else:
                         cv2.line(result, (x1, y1), (x3, y3), (255, 0, 0), 3)
                     if int(jarak23) < jarakMin:
                         cv2.line(result, (x2, y2), (x3, y3), (0, 0, 255), 3)
+                        cv2.circle(result, (x2, y2), int(jarakMin / 2), (0, 0, 255), 1)
+                        cv2.circle(result, (x3, y3), int(jarakMin / 2), (0, 0, 255), 1)
                     else:
                         cv2.line(result, (x2, y2), (x3, y3), (255, 0, 0), 3)
                 else:
@@ -405,14 +411,20 @@ class Video:
 
                     if int(jarak14) < jarakMin:
                         cv2.line(result, (x1, y1), (x4, y4), (0, 0, 255), 3)
+                        cv2.circle(result, (x1, y1), int(jarakMin / 2), (0, 0, 255), 1)
+                        cv2.circle(result, (x4, y4), int(jarakMin / 2), (0, 0, 255), 1)
                     else:
                         cv2.line(result, (x1, y1), (x4, y4), (255, 0, 0), 3)
                     if int(jarak24) < jarakMin:
                         cv2.line(result, (x2, y2), (x4, y4), (0, 0, 255), 3)
+                        cv2.circle(result, (x2, y2), int(jarakMin / 2), (0, 0, 255), 1)
+                        cv2.circle(result, (x4, y4), int(jarakMin / 2), (0, 0, 255), 1)
                     else:
                         cv2.line(result, (x2, y2), (x4, y4), (255, 0, 0), 3)
                     if int(jarak34) < jarakMin:
                         cv2.line(result, (x3, y3), (x4, y4), (0, 0, 255), 3)
+                        cv2.circle(result, (x3, y3), int(jarakMin / 2), (0, 0, 255), 1)
+                        cv2.circle(result, (x4, y4), int(jarakMin / 2), (0, 0, 255), 1)
                     else:
                         cv2.line(result, (x3, y3), (x4, y4), (255, 0, 0), 3)
 
