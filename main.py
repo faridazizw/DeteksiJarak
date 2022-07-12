@@ -7,6 +7,7 @@ import os
 from tkinter import filedialog
 from tkinter import *
 
+import six
 from PIL import ImageTk, Image
 
 import time
@@ -20,6 +21,8 @@ class Video:
         self.tempdir = ""
         self.cap = ""
         self.prevWindow = ""
+        self.procWindow = ""
+        self.jarakMin = "200"
 
     def btn_openFile(self):
         main_window.withdraw()
@@ -45,16 +48,28 @@ class Video:
             else:
                 main_window.withdraw()
                 self.cap = cv2.VideoCapture(path)
-                pc.openPrevWindow(self.cap)
+
+                if (self.cap.isOpened() == False):
+                    pc.msgBox3()
+                    main_window.deiconify()
+                else:
+                    pc.openPrevWindow(self.cap)
 
         elif var_rb.get() == 2:
             path = ent2.get()
             if path == "":
                 pc.msgBox2()
+            elif isinstance(int(path), str):
+                pc.msgBox3()
             else:
                 main_window.withdraw()
                 self.cap = cv2.VideoCapture(int(path))
-                pc.openPrevWindow(self.cap)
+
+                if (self.cap.isOpened() == False):
+                    pc.msgBox3()
+                    main_window.deiconify()
+                else:
+                    pc.openPrevWindow(self.cap)
 
     def clearValue(self):
         del coor[:]
@@ -64,6 +79,12 @@ class Video:
 
     def msgBox2(self):
         messagebox.showerror("Kesalahan", "Video yang akan ditinjau tidak boleh kosong!")
+
+    def msgBox3(self):
+        messagebox.showerror("Kesalahan", "Kamera atau Video tidak ditemukan!")
+
+    def msgBox4(self):
+        messagebox.showerror("Kesalahan", "Jumlah koordinat tidak boleh kurang dari 4!")
 
     def displayCoordinates(self, event):
         if(len(coor)<4):
@@ -93,6 +114,11 @@ class Video:
     def hitungJarak(self, x1, x2, y1, y2):
         return sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
+    def checkCoor(self):
+        if(len(coor) < 4):
+            pc.msgBox4()
+            pc.openPrevWindow()
+
     def openPrevWindow(self, cap):
         self.prevWindow = Toplevel(master)
 
@@ -115,7 +141,7 @@ class Video:
         btnClear = Button(frame1, text="Hapus", command=pc.clearValue, width=20, font="bold")
         btnClear.grid(row=3, column=0, pady=15)
 
-        btnProses = Button(frame1, text="Proses", command=lambda:[pc.openProcessWindow(cap)], width=20, font="bold")
+        btnProses = Button(frame1, text="Proses", command=lambda:[pc.checkCoor(), pc.openProcessWindow(cap)], width=20, font="bold")
         btnProses.grid(row=3, column=0, sticky=E, pady=15)
 
         self.prevWindow.protocol("WM_DELETE_WINDOW", pc.disable_event)
@@ -153,18 +179,22 @@ class Video:
             cv2.waitKey(25)
             self.prevWindow.update()
 
+    def updateJarak(self, entJarak, cap):
+        self.jarakMin = entJarak
+        self.procWindow.destroy()
+        pc.openProcessWindow(cap)
+
     def openProcessWindow(self, cap):
         self.prevWindow.destroy()
+
+        self.procWindow = Toplevel(master)
 
         lower = np.array([5, 120, 255])
         upper = np.array([35, 255, 255])
 
         color = (255, 0, 0)
 
-        jarakMin1 = StringVar()
-        jarakMin1.set(200)
-
-
+        jarakMin1 = StringVar(self.procWindow, value=self.jarakMin)
 
         jarak12 = 0
         jarak13 = 0
@@ -173,27 +203,29 @@ class Video:
         jarak24 = 0
         jarak34 = 0
 
-        procWindow = Toplevel(master)
-        procWindow.grid_rowconfigure(0, weight=1)
-        procWindow.grid_columnconfigure(0, weight=1)
+        self.procWindow.grid_rowconfigure(0, weight=1)
+        self.procWindow.grid_columnconfigure(0, weight=1)
 
-        procWindow.title("Deteksi jarak antara manusia")
-        L1 = tkinter.Label(procWindow)
+        self.procWindow.title("Deteksi jarak antara manusia")
+        L1 = tkinter.Label(self.procWindow)
         L1.grid(row=0, column=0, sticky='W')
 
-        L2 = tkinter.Label(procWindow)
+        L2 = tkinter.Label(self.procWindow)
         L2.grid(row=0, column=1, sticky='N')
 
-        btnBack = Button(procWindow, text="Kembali", command=lambda: [procWindow.destroy(), pc.btn_mulai()], width=20, font="bold")
+        btnBack = Button(self.procWindow, text="Kembali", command=lambda: [self.procWindow.destroy(), pc.btn_mulai()], width=20, font="bold")
         btnBack.grid(row=2, column=0, sticky=W, pady=15)
 
-        entJarak = tkinter.Entry(procWindow, textvariable=jarakMin1)
+        entJarak = tkinter.Entry(self.procWindow, textvariable=jarakMin1)
         entJarak.grid(row=2, column=1, sticky='W')
 
-        lblJarak = tkinter.Label(procWindow, textvariable=jarakMin1)
-        lblJarak.grid(row=2, column=1, sticky='E')
+        btnJarak = Button(self.procWindow, text="Update Jarak", command=lambda: [pc.updateJarak(entJarak.get(), cap)], width=20, font="bold")
+        btnJarak.grid(row=2, column=1, sticky='E', pady=15)
 
-        jarakMin = int(entJarak.get())
+        # lblJarak = tkinter.Label(procWindow, textvariable=jarakMin1)
+        # lblJarak.grid(row=2, column=1, sticky='E')
+
+        jarakMin = int(self.jarakMin)
 
         # Load Yolo
         net = cv2.dnn.readNet("model/8yolov3_training_best58,45.weights", "cfg/yolov3_training.cfg")
@@ -408,18 +440,18 @@ class Video:
             L1['image'] = frame
             L2['image'] = persp
 
-
+            print(jarakMin)
 
             cv2.waitKey(25)
 
-            procWindow.update()
+            self.procWindow.update()
 
 
 if __name__ == '__main__':
     main_window = tkinter.Tk()
 
     main_window.title("Deteksi Jarak")
-    main_window.geometry("500x250")
+    main_window.geometry("550x250")
 
     var_rb = IntVar(main_window, 1)
     cam = StringVar()
@@ -427,7 +459,7 @@ if __name__ == '__main__':
 
     pc = Video()
 
-    label1 = tkinter.Label(main_window, text="masukan video untuk deteksi")
+    label1 = tkinter.Label(main_window, text="masukan video untuk deteksi", font="Times 15 bold")
     label1.grid(row=0, column=1)
 
     # radio btn 1
