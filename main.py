@@ -7,7 +7,6 @@ import os
 from tkinter import filedialog
 from tkinter import *
 
-import six
 from PIL import ImageTk, Image
 
 import time
@@ -215,6 +214,9 @@ class Video:
 
         btnBack = Button(self.procWindow, text="Kembali", command=lambda: [self.procWindow.destroy(), pc.btn_mulai()], width=20, font="bold")
         btnBack.grid(row=2, column=0, sticky=W, pady=15)
+
+        lblJarak = tkinter.Label(self.procWindow, text="Jarak 1,5M = ")
+        lblJarak.grid(row=2, column=0, sticky='E')
 
         entJarak = tkinter.Entry(self.procWindow, textvariable=jarakMin1)
         entJarak.grid(row=2, column=1, sticky='W')
