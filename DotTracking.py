@@ -56,10 +56,10 @@ class HitungJarak():
             y2 = poin[1][1]
 
             # jarak x1 - x2
-            if x1 > x2:
+            if x2 > x1:
                 jarak12 = hitungJarak(x1, x2, y1, y2)
                 # cv2.putText(img, str(int(jarak12)), (int(jarak12 / 2), int(jarak12)), font, 1, color, 2)
-            elif x2 > x1:
+            elif x1 > x2:
                 jarak12 = hitungJarak(x2, x1, y2, y1)
                 # cv2.putText(img, str(int(jarak12)), (int(jarak12 / 2), int(jarak12 / 2)), font, 1, color, 2)
 
@@ -73,13 +73,13 @@ class HitungJarak():
                 x3 = poin[2][0]
                 y3 = poin[2][1]
 
-                if x1 > x3:
+                if x3 > x1:
                     jarak13 = hitungJarak(x1, x3, y1, y3)
-                elif x3 > x1:
+                elif x1 > x3:
                     jarak13 = hitungJarak(x3, x1, y3, y1)
-                if x2 > x3:
+                if x3 > x2:
                     jarak23 = hitungJarak(x2, x3, y2, y3)
-                elif x3 > x2:
+                elif x2 > x3:
                     jarak23 = hitungJarak(x3, x2, y3, y2)
 
                 if int(jarak13) < 400:
@@ -96,17 +96,17 @@ class HitungJarak():
                     x4 = poin[3][0]
                     y4 = poin[3][1]
 
-                    if x1 > x4:
+                    if x4 > x1:
                         jarak14 = hitungJarak(x1, x4, y1, y4)
-                    elif x4 > x1:
+                    elif x1 > x4:
                         jarak14 = hitungJarak(x4, x1, y4, y1)
-                    if x2 > x4:
+                    if x4 > x2:
                         jarak24 = hitungJarak(x2, x4, y2, y4)
-                    elif x4 > x2:
+                    elif x2 > x4:
                         jarak24 = hitungJarak(x4, x2, y4, y2)
-                    if x3 > x4:
+                    if x4 > x3:
                         jarak34 = hitungJarak(x3, x4, y3, y4)
-                    elif x4 > x3:
+                    elif x3 > x4:
                         jarak34 = hitungJarak(x4, x3, y4, y3)
 
                     if int(jarak14) < 400:
